@@ -116,4 +116,37 @@ if (performance.navigation.type == performance.navigation.TYPE_RELOAD) {
   console.info("This page is reloaded");
 } else {
   console.info("This page is not reloaded");
+  location.reload();
+}
+
+export function buildPlayerCard(json) {
+  let docFrag = document.createDocumentFragment("");
+  let jersey = document.createElement("h3");
+  jersey.innerText = "#" + json["Jersey"];
+  let position = document.createElement("p");
+  position.innerText = json["Position"];
+  let heightWeight = document.createElement("p");
+  heightWeight.innerText =
+    "Height: " +
+    json["Height"] +
+    " inches | " +
+    "Weight: " +
+    json["Weight"] +
+    " pounds";
+  let age = document.createElement("p");
+  age.innerText =
+    "Age: " + calculateAge(new Date(), json["BirthDate"].split("T")[0]);
+
+  docFrag.appendChild(jersey);
+  docFrag.appendChild(position);
+  docFrag.appendChild(heightWeight);
+  docFrag.appendChild(age);
+
+  return docFrag;
+}
+
+function calculateAge(thisYr, birthYr) {
+  console.log(thisYr, new Date(birthYr));
+  console.log(Math.floor((thisYr - new Date(birthYr)) / 31536000000));
+  return "Age:", Math.floor((thisYr - new Date(birthYr)) / 31536000000);
 }

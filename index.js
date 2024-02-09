@@ -5,6 +5,7 @@ import {
   buildTeamOption,
   filterDivisionOptions,
   clearPlayerOption,
+  buildPlayerCard,
 } from "./helper.js";
 
 import { NBA_CODE } from "./features.js";
@@ -43,6 +44,7 @@ addPlayerButtonEl.addEventListener("click", (e) => {
       newPlayerCard.classList.add("player-card");
       newPlayerCard.style.backgroundColor = `${teamColor[1]}`;
       newPlayerCard.style.borderColor = `${teamColor[0]}`;
+      newPlayerCard.style.color = teamColor[0];
 
       let logoImg = document.createElement("img");
       let cardHeader = document.createElement("div");
@@ -58,11 +60,10 @@ addPlayerButtonEl.addEventListener("click", (e) => {
       let playerName = document.createElement("h4");
       playerName.innerText =
         playerObj["FirstName"] + " " + playerObj["LastName"];
-
-      playerName.style.textShadow = `${teamColor[0]} 1px 5px`;
-
+      playerName.classList.add("pt-5");
       newPlayerCard.appendChild(cardHeader);
       newPlayerCard.appendChild(playerName);
+      newPlayerCard.appendChild(buildPlayerCard(playerObj));
       cardContainerEl.appendChild(newPlayerCard);
     }
   }

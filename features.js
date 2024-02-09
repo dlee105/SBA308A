@@ -62,7 +62,7 @@ export const NBA_CODE = {
     division: "Central",
     logo_url: "./images/nba-detroit-pistons-logo-300x300.png",
   },
-  GSW: {
+  GS: {
     name: "Golden State Warriors",
     colors: ["#1D428A", "#FFC72C"],
     conference: "West",
@@ -125,14 +125,14 @@ export const NBA_CODE = {
     division: "Northwest",
     logo_url: "./images/nba-minnesota-timberwolves-logo-300x300.png",
   },
-  NOP: {
+  NO: {
     name: "New Orleans Pelicans",
     colors: ["#0C2340", "#C8102E"],
     conference: "West",
     division: "Southwest",
     logo_url: "./images/nba-new-orleans-pelicans-logo-300x300.png",
   },
-  NYK: {
+  NY: {
     name: "New York Knicks",
     colors: ["#006BB6", "#F58426"],
     conference: "East",
@@ -160,7 +160,7 @@ export const NBA_CODE = {
     division: "Atlantic",
     logo_url: "./images/nba-philadelphia-76ers-logo-300x300.png",
   },
-  PHX: {
+  PHO: {
     name: "Phoenix Suns",
     colors: ["#1D1160", "#E56020"],
     conference: "West",
@@ -181,7 +181,7 @@ export const NBA_CODE = {
     division: "Pacific",
     logo_url: "./images/nba-sacramento-kings-logo-300x300.png",
   },
-  SAS: {
+  SA: {
     name: "San Antonio Spurs",
     colors: ["#C4CED4", "#000000"],
     conference: "West",
@@ -211,7 +211,7 @@ export const NBA_CODE = {
   },
 };
 
-export const playerExampleRes = {
+const playerExampleRes = {
   id: 1858,
   firstname: "Bruno",
   lastname: "Fernando",
