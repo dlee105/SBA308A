@@ -41,25 +41,28 @@ addPlayerButtonEl.addEventListener("click", (e) => {
       let teamLogo = NBA_CODE[playerObj["Team"]].logo_url;
       let newPlayerCard = document.createElement("div");
       newPlayerCard.classList.add("player-card");
-      newPlayerCard.style.backgroundColor = `${teamColor[0]}`;
+      newPlayerCard.style.backgroundColor = `${teamColor[1]}`;
+      newPlayerCard.style.borderColor = `${teamColor[0]}`;
+
       let logoImg = document.createElement("img");
+      let cardHeader = document.createElement("div");
+      cardHeader.style.backgroundColor = `${teamColor[0]}`;
+      cardHeader.classList.add("pcard-header");
+      cardHeader.style.borderBottomColor = `${teamColor[0]}`;
+
       logoImg.setAttribute("src", teamLogo);
       logoImg.setAttribute("alt", NBA_CODE[playerObj["Team"]].name);
-      logoImg.style.scale = ".2";
-      logoImg.style.position = "sticky";
-      logoImg.style.top = "0";
+      logoImg.classList.add("pcard-img");
 
-      let playerName = document.createElement("h5");
+      cardHeader.appendChild(logoImg);
+      let playerName = document.createElement("h4");
       playerName.innerText =
         playerObj["FirstName"] + " " + playerObj["LastName"];
 
-      newPlayerCard.appendChild(logoImg);
-      newPlayerCard.appendChild(playerName);
-      // newPlayerCard.innerText = `${
-      //   playerObj["FirstName"] + " " + playerObj["LastName"]
-      // }`;
-      //Append new card to view;
+      playerName.style.textShadow = `${teamColor[0]} 1px 5px`;
 
+      newPlayerCard.appendChild(cardHeader);
+      newPlayerCard.appendChild(playerName);
       cardContainerEl.appendChild(newPlayerCard);
     }
   }
