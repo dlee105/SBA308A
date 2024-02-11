@@ -76,7 +76,7 @@ export function buildTeamOption(conference, division) {
     Element.teamSelectorEl.appendChild(team);
   };
 
-  console.log(c, d);
+  // console.log(c, d);
   for (const key of Object.keys(NBA_CODE)) {
     let objC = NBA_CODE[key].conference;
     let objD = NBA_CODE[key].division;
@@ -146,7 +146,7 @@ export function buildPlayerBody(json) {
 }
 
 export function buildPlayerCard(playerObj) {
-  console.log(NBA_CODE);
+  // console.log(NBA_CODE);
   let teamColor = NBA_CODE[playerObj["Team"]].colors;
   let teamLogo = NBA_CODE[playerObj["Team"]].logo_url;
   let newPlayerCard = document.createElement("div");
@@ -176,7 +176,7 @@ export function buildPlayerCard(playerObj) {
 }
 
 function calculateAge(thisYr, birthYr) {
-  console.log(thisYr, new Date(birthYr));
-  console.log(Math.floor((thisYr - new Date(birthYr)) / 31536000000));
+  // console.log(thisYr, new Date(birthYr));
+  // console.log(Math.floor((thisYr - new Date(birthYr)) / 31536000000));
   return "Age:", Math.floor((thisYr - new Date(birthYr)) / 31536000000);
 }
