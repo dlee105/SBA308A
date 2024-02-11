@@ -7,34 +7,67 @@ import {
   buildPlayerCard,
 } from "./helper.js";
 
-import { NBA_CODE } from "./tools.js";
-
-// const fs = require("fs");
+import {
+  NBA_CODE,
+  ENDPOINT,
+  API_KEY,
+  SHEET_API_KEY,
+  SHEET_ENDPOINT,
+} from "./tools.js";
 
 import axios from "axios";
 
-let TEAM_PLAYER_DATA = [];
+// ==============================================================================
+// PLEASE CONSIDER NOT REFRESHING TOO MUCH AS DATA ARE LOADED FROM AN API WITH LIMITED
+// QUOTA CURRENTLY ABOUT 15% OF LIMIT SO TO AVOID WEBSITE BREAKING PLEASE COMMENT OUT
+// THE loadSheetDB() FUNCTION AS THIS IS CALLED EVERYTIME THE WEBSITE LOADS UP
+// ALSO IF RUN INTO AUTHENTICATION ISSUES PLEASE CONTACT ME FOR A NEW SHEETDB APIKEY :)
+// WHERE THE DATA IS ADDED TO: (OPEN THIS GOOGLE SHEET WHILE USING THE WEBSITE TO SEE REALTIME UPDATE)
+// https://docs.google.com/spreadsheets/d/1ZR2bh41uwJb869lPEsrU1t3hLtYM_G5pBxIKqUUotHU/edit?usp=sharing
+// ==============================================================================
 
-const ENDPOINT = "https://api.sportsdata.io/v3/nba/scores/json/PlayersBasic/";
-const API_KEY = "0b3cc34d6a6c452694e50ba78ab704b7";
-const SHEET_API_KEY = "845ycti0p977xe5tid2o2vjnkq5eh0zhv07fztws";
-const SHEET_ENDPOINT = "https://sheetdb.io/api/v1/zp4djpgp3onkb";
+let TEAM_PLAYER_DATA = []; // CONTAINS ALL PLAYER IN THE CURRENT SELECTED TEAM //
+let ADDED_PLAYER = []; // SHOULD UPDATE CORRESPONDING TO SHEETDB
 
-async function loadPage() {
-  // const csvFile = fs.readFileSync("./src/test.csv", "utf-8");
-  // console.log(csvFile);
-  // var results = Papa.parse("./src/test.csv");
-  // console.log(results.meta.delimiter);
+// HELPER FUNCTIONS FOR INDEX.JS //
+function removePlayerFromList(PlayerID) {
+  const idx = ADDED_PLAYER.findIndex((obj) => obj["PlayerID"] === PlayerID);
+  ADDED_PLAYER.splice(idx, 1);
+  console.log(ADDED_PLAYER);
+}
+//================================================================================
+
+// DOCUMENT QUERIES ==============================================================
+export let conferenceSelectorEl = document.getElementById("conference-select");
+export let divisionsSelectorEl = document.getElementById("divisions-select");
+export let teamSelectorEl = document.getElementById("team-select");
+export let playerSelectorEl = document.getElementById("player-select");
+export let addPlayerButtonEl = document.getElementById("add-player-button");
+export let cardContainerEl = document.getElementById("card-container");
+
+// API FUNCTIONS =================================================================
+// LOADING DATA FROM SHEETDB AND DISPLAY THEM
+//GET Request
+async function loadSheetDB() {
   await axios
-    .get(SHEET_ENDPOINT + "?key=" + SHEET_API_KEY)
+    .get(SHEET_ENDPOINT, {
+      headers: { Authorization: `Bearer ${SHEET_API_KEY}` },
+    })
     .then((response) => {
-      // console.log(response.data);
-      buildPlayerCard(response.data[0]);
+      console.log("SUCCESS: Loaded SheetDB");
+
+      for (const player of response.data) {
+        // console.log(player);
+        ADDED_PLAYER.push(player);
+        buildPlayerCard(player);
+      }
     })
     .catch((error) => console.log(error));
+  console.log(ADDED_PLAYER);
 }
-// loadPage();
 
+// ADDING PLAYER ONTO SHEETDB
+// POST request
 async function postPlayer(playerObj) {
   let header = {
     PlayerID: playerObj.PlayerID,
@@ -49,35 +82,48 @@ async function postPlayer(playerObj) {
     Height: playerObj.Height,
     Weight: playerObj.Weight,
   };
-  console.log(header);
   await axios
-    .post(SHEET_ENDPOINT + "?key=" + SHEET_API_KEY, header)
-    .then((response) => console.log(response))
+    .post(
+      SHEET_ENDPOINT,
+      {
+        header,
+      },
+      { headers: { Authorization: `Bearer ${SHEET_API_KEY}` } }
+    )
+    .then((response) => {
+      console.log("SUCCESS: Posted", playerObj.PlayerID),
+        buildPlayerCard(playerObj);
+    })
     .catch((error) => console.log(error));
 }
 
-export let conferenceSelectorEl = document.getElementById("conference-select");
-export let divisionsSelectorEl = document.getElementById("divisions-select");
-export let teamSelectorEl = document.getElementById("team-select");
-export let playerSelectorEl = document.getElementById("player-select");
-export let addPlayerButtonEl = document.getElementById("add-player-button");
-export let cardContainerEl = document.getElementById("card-container");
+// DELETING PLAYER FROM SHEETDB
+// DELETE Reqest
+async function removePlayer(playerID) {
+  axios
+    .delete(SHEET_ENDPOINT + "/PlayerID/" + playerID, {
+      headers: { Authorization: `Bearer ${SHEET_API_KEY}` },
+    })
+    .then((response) => {
+      removePlayerFromList(playerID);
+      console.log("SUCCESS: Removed", playerID);
+    })
+    .catch((error) => console.log(error));
+}
 
-addPlayerButtonEl.addEventListener("click", (e) => {
-  for (const playerObj of TEAM_PLAYER_DATA) {
-    if (playerSelectorEl.value == playerObj["PlayerID"]) {
-      postPlayer(playerObj);
-      buildPlayerCard(playerObj);
-    }
-  }
-});
+// WEBPAGE INITIALIZE ============================================================
+/////////////////////////////
+//THESE WILL ONLY RUN ONCE //
+loadSheetDB(); // <== UNCOMMENT THIS TO GET DATA FROM SHEETDB API
+//get from SheetDB //////////
+load(); /////////////////////
+// default for team select //
+/////////////////////////////
+/////////////////////////////
+// removePlayer(20002307);
+// ===============================================================================
 
-/////////////////////////////
-// THIS WILL ONLY RUN ONCE //
-load(); //////////////////////
-/////////////////////////////
-/////////////////////////////
-
+// EVENT LISTENERS ===============================================================
 conferenceSelectorEl.addEventListener("change", (e) => {
   clearDivisionSelect();
   buildTeamOption(conferenceSelectorEl.value, divisionsSelectorEl.value);
@@ -91,6 +137,8 @@ divisionsSelectorEl.addEventListener("change", (e) => {
   // const currentDivisionOptions =
 });
 
+// LOADING PLAYER WHEN A TEAM IS SELECTED FROM api.sportsdata.io //
+// GET request
 teamSelectorEl.addEventListener("change", async (e) => {
   //console.log(teamSelectorEl.value, teamSelectorEl.value !== "default");
 
@@ -126,4 +174,30 @@ teamSelectorEl.addEventListener("change", async (e) => {
   }
 });
 
-playerSelectorEl.addEventListener("change", (e) => {});
+window.addEventListener("click", async (e) => {
+  if ([...e.target.classList].includes("del-btn")) {
+    let pname = e.target.parentNode.innerText.split("\n")[0];
+    // console.log(pname);
+    if (confirm(`Remove ${pname}?`)) {
+      const ID = e.target.parentNode.id;
+      removePlayer(ID);
+      cardContainerEl.removeChild(document.getElementById(ID));
+    }
+  }
+});
+
+//
+addPlayerButtonEl.addEventListener("click", async (e) => {
+  for (const playerObj of TEAM_PLAYER_DATA) {
+    if (playerSelectorEl.value == playerObj["PlayerID"]) {
+      if (!ADDED_PLAYER.find((obj) => obj.PlayerID == playerObj["PlayerID"])) {
+        ADDED_PLAYER.push(playerObj);
+        postPlayer(playerObj);
+      } else {
+        alert("No duplicate allowed!");
+      }
+      break;
+    }
+  }
+  // console.log(ADDED_PLAYER);
+});

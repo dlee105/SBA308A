@@ -1,3 +1,10 @@
+export const ENDPOINT =
+  "https://api.sportsdata.io/v3/nba/scores/json/PlayersBasic/";
+export const API_KEY = "0b3cc34d6a6c452694e50ba78ab704b7";
+export const SHEET_API_KEY = "bhikerqxqd7v8dt0ni9bmsqkvdrfms4arm32h15c";
+export const SHEET_ENDPOINT = "https://sheetdb.io/api/v1/zp4djpgp3onkb";
+
+// JSON CREATED FROM CHATGPT TO ASSIST WITH API QUOTAS (IM NOT PAYING!!!!)
 export const NBA_CODE = {
   ATL: {
     name: "Atlanta Hawks",
@@ -210,7 +217,19 @@ export const NBA_CODE = {
     logo_url: "./images/nba-washington-wizards-logo-300x300.png",
   },
 };
+export const EAST_DIVISIONS = {
+  atlantic: "Atlantic",
+  central: "Central",
+  southeast: "Southeast",
+};
+export const WEST_DIVISIONS = {
+  northwest: "Northwest",
+  pacific: "Pacific",
+  southwest: "Southwest",
+};
+export const ALL_DIVISIONS = { ...EAST_DIVISIONS, ...WEST_DIVISIONS };
 
+// TEST =================================================================================
 const playerExampleRes = {
   id: 1858,
   firstname: "Bruno",
@@ -225,15 +244,4 @@ const playerExampleRes = {
   vegas: { jersey: 55, active: true, pos: "F-C" },
 };
 
-export const EAST_DIVISIONS = {
-  atlantic: "Atlantic",
-  central: "Central",
-  southeast: "Southeast",
-};
-export const WEST_DIVISIONS = {
-  northwest: "Northwest",
-  pacific: "Pacific",
-  southwest: "Southwest",
-};
-
-export const ALL_DIVISIONS = { ...EAST_DIVISIONS, ...WEST_DIVISIONS };
+// const TEST_CSV = `PlayerID,TeamID,Team,Jersey,PositionCategory,Position,FirstName,LastName,BirthDate,Height,Weight\n20000810,11,CHI,3,C,C,Andre,Drummond,1993-08-10 0:00:00,83,3\n20002307,12,CLE,2,G,PG,Ty,Jerome,1997-07-08 0:00:00,77,200\n20001661,8,BKN,10,G,PG,Ben,Simmons,1996-07-20 0:00:00,82,240`;

@@ -106,19 +106,6 @@ export const clearPlayerOption = () => {
   }
 };
 
-// Fixed Bug Where Reload Button Doesn't Reset The Content
-// {DO LATER}
-if (window.performance) {
-  console.info("window.performance works fine on this browser");
-}
-console.info(performance.navigation.type);
-if (performance.navigation.type == performance.navigation.TYPE_RELOAD) {
-  console.info("This page is reloaded");
-} else {
-  console.info("This page is not reloaded");
-  location.reload();
-}
-
 export function buildPlayerBody(json) {
   let docFrag = document.createDocumentFragment("");
   let jersey = document.createElement("h3");
@@ -168,10 +155,21 @@ export function buildPlayerCard(playerObj) {
   cardHeader.appendChild(logoImg);
   let playerName = document.createElement("h4");
   playerName.innerText = playerObj["FirstName"] + " " + playerObj["LastName"];
-  playerName.classList.add("pt-5");
+  playerName.classList.add("pt-2");
   newPlayerCard.appendChild(cardHeader);
   newPlayerCard.appendChild(playerName);
   newPlayerCard.appendChild(buildPlayerBody(playerObj));
+  newPlayerCard.setAttribute("id", playerObj["PlayerID"]);
+
+  let cardDelBtn = document.createElement("span");
+  cardDelBtn.classList.add("material-symbols-outlined", "del-btn");
+  cardDelBtn.innerText = "delete";
+
+  // cardDelBtn.setAttribute("type", "button");
+  // cardDelBtn.classList.add("btn", "btn-primary", "del-btn");
+  // cardDelBtn.innerText = "Remove";
+  // cardDelBtn.setAttribute("style", "width: 100px");
+  newPlayerCard.appendChild(cardDelBtn);
   Element.cardContainerEl.appendChild(newPlayerCard);
 }
 
@@ -179,4 +177,17 @@ function calculateAge(thisYr, birthYr) {
   // console.log(thisYr, new Date(birthYr));
   // console.log(Math.floor((thisYr - new Date(birthYr)) / 31536000000));
   return "Age:", Math.floor((thisYr - new Date(birthYr)) / 31536000000);
+}
+
+// Fixed Bug Where Reload Button Doesn't Reset The Content
+// {DO LATER}
+if (window.performance) {
+  console.info("window.performance works fine on this browser");
+}
+console.info(performance.navigation.type);
+if (performance.navigation.type == performance.navigation.TYPE_RELOAD) {
+  console.info("This page is reloaded");
+} else {
+  console.info("This page is not reloaded");
+  location.reload();
 }
