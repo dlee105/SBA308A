@@ -3,7 +3,7 @@ import {
   EAST_DIVISIONS,
   WEST_DIVISIONS,
   ALL_DIVISIONS,
-} from "./features.js";
+} from "./tools.js";
 import * as Element from "./index.js";
 
 export const initialTeamLoad = () => {
@@ -119,7 +119,7 @@ if (performance.navigation.type == performance.navigation.TYPE_RELOAD) {
   location.reload();
 }
 
-export function buildPlayerCard(json) {
+export function buildPlayerBody(json) {
   let docFrag = document.createDocumentFragment("");
   let jersey = document.createElement("h3");
   jersey.innerText = "#" + json["Jersey"];
@@ -143,6 +143,36 @@ export function buildPlayerCard(json) {
   docFrag.appendChild(age);
 
   return docFrag;
+}
+
+export function buildPlayerCard(playerObj) {
+  console.log(NBA_CODE);
+  let teamColor = NBA_CODE[playerObj["Team"]].colors;
+  let teamLogo = NBA_CODE[playerObj["Team"]].logo_url;
+  let newPlayerCard = document.createElement("div");
+  newPlayerCard.classList.add("player-card");
+  newPlayerCard.style.backgroundColor = `${teamColor[1]}`;
+  newPlayerCard.style.borderColor = `${teamColor[0]}`;
+  newPlayerCard.style.color = teamColor[0];
+
+  let logoImg = document.createElement("img");
+  let cardHeader = document.createElement("div");
+  cardHeader.style.backgroundColor = `${teamColor[0]}`;
+  cardHeader.classList.add("pcard-header");
+  cardHeader.style.borderBottomColor = `${teamColor[0]}`;
+
+  logoImg.setAttribute("src", teamLogo);
+  logoImg.setAttribute("alt", NBA_CODE[playerObj["Team"]].name);
+  logoImg.classList.add("pcard-img");
+
+  cardHeader.appendChild(logoImg);
+  let playerName = document.createElement("h4");
+  playerName.innerText = playerObj["FirstName"] + " " + playerObj["LastName"];
+  playerName.classList.add("pt-5");
+  newPlayerCard.appendChild(cardHeader);
+  newPlayerCard.appendChild(playerName);
+  newPlayerCard.appendChild(buildPlayerBody(playerObj));
+  Element.cardContainerEl.appendChild(newPlayerCard);
 }
 
 function calculateAge(thisYr, birthYr) {
